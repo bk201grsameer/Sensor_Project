@@ -1,16 +1,24 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include "mySensor.h"
 #include "led_Control.h"
+#include "dht_Control.h"
 
 MySensor sensor = MySensor();
-MyLed *red = new MyLed();
+MyLed yellow = MyLed();
+MyDHT mydht = MyDHT();
+
+// led config
+unsigned long lastTimeWarningLEDBlinked = millis();
+unsigned long warningLEDDelay = 500;
+byte warningLEDState = LOW;
 
 // pulse low - high read
 void echoPinInterrupt()
-
 {
   if (digitalRead(sensor.echo_pin) == HIGH)
   {
+    // signal rising
     sensor.pulseInTimeBegin = micros();
   }
   else
@@ -20,11 +28,36 @@ void echoPinInterrupt()
     sensor.newDistanceAvailable = true;
   }
 }
+// function to handle toggle warning
+void toggleWarningLED()
+{
+  warningLEDState = warningLEDState == HIGH ? LOW : HIGH;
+  yellow.led_Write(warningLEDState);
+}
+
+void warning_Rate_Distance_Based(double distance)
+{
+  // 0 .. 400 cm -> 0 ..1600 ms
+  warningLEDDelay = distance * 4;
+}
+
+void sendSensorData(String datakey, double value)
+{
+  // create a json objec
+  StaticJsonDocument<200> jsonobj;
+  // add value
+  jsonobj[datakey] = value;
+  // Serialize the json object to a string
+  String jsonString;
+  serializeJson(jsonobj, jsonString);
+  // Send the JSON string over the serial port
+  Serial.println(jsonString);
+}
 
 void setup()
 {
   Serial.begin(9600);
-  red->my_Led_Init();
+  yellow.my_Led_Init();
   // sensor config
   sensor.my_Sensor_Init();
   attachInterrupt(digitalPinToInterrupt(sensor.echo_pin), echoPinInterrupt, CHANGE);
@@ -34,5 +67,36 @@ void loop()
 {
   unsigned long timeNow = millis();
   // every 100 ms start measuring
-  sensor.start_Distance_Measurements_With_Interrupt(timeNow);
+  if (timeNow - sensor.lastTimeUltrasonicTrigger > sensor.ultrasonicTriggerDelay)
+  {
+    sensor.lastTimeUltrasonicTrigger += sensor.ultrasonicTriggerDelay;
+    // trigger sensor
+    sensor.trigger_UltrasonicSensor();
+  }
+  // replication non blocking
+  if (timeNow - lastTimeWarningLEDBlinked > warningLEDDelay) // the warning delay will be dynamically updated
+  {
+    lastTimeWarningLEDBlinked += warningLEDDelay;
+    // toggle led
+    toggleWarningLED();
+  }
+
+  // get distance
+  if (sensor.newDistanceAvailable)
+  {
+    sensor.newDistanceAvailable = false;
+    double distance = sensor.getUltrasonicDistance_UsingInterrupt();
+    warning_Rate_Distance_Based(distance);
+    sendSensorData("distance", distance);
+  }
+
+  // addanother action to read temperature and humitdity every two seconds
+  if (timeNow - mydht.lastTimeDhtTrigger > mydht.dhtTriggerDelay)
+  {
+    mydht.lastTimeDhtTrigger += mydht.dhtTriggerDelay;
+    float temperature = mydht.get_Temperature(); // Read temperature in Celsius;
+    float humidity = mydht.get_Humidity();
+    sendSensorData("temperature", (double)temperature);
+    sendSensorData("humidity", (double)humidity);
+  }
 }

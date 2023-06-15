@@ -2,9 +2,8 @@
 
 class MyLed
 {
-
 public:
-    int led_Pin = 13;
+    int led_Pin = 11;
     MyLed(/* args */){};
     MyLed(int ledPinRed)
     {
@@ -29,6 +28,7 @@ public:
     void switch_Off() { digitalWrite(led_Pin, 0); }
 
     void state_Led(int state) { digitalWrite(led_Pin, state); }
+    void led_Write(byte state) { digitalWrite(led_Pin, state); }
 
     ~MyLed(){};
 };

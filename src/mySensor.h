@@ -8,7 +8,7 @@ public:
     int echo_pin = 18; // also to handle interrupt
     // default timer config
     unsigned long lastTimeUltrasonicTrigger = millis();
-    unsigned long ultrasonicTriggerDelay = 100;
+    unsigned long ultrasonicTriggerDelay = 60;
 
     // with pulse interrupt
     volatile unsigned long pulseInTimeBegin;
