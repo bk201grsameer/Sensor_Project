@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"name": "DHT_SENSOR_DATA",
+			"path": "../../DHT_SENSOR_DATA"
+		},
+		{
+			"name": "SensorProject",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"ostream": "cpp",
+			"xlocnum": "cpp"
+		}
+	}
+}

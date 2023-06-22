@@ -9,9 +9,12 @@ public:
     int DHT_TYPE = DHT11;
     // default timer config
     unsigned long lastTimeDhtTrigger = millis();
-    unsigned long dhtTriggerDelay = 2000; //every 2secs
-    DHT *dht;                                     // Use a pointer to the DHT object
-    MyDHT() { dht = new DHT(DHT_PIN, DHT_TYPE); } // Dynamically allocate memory
+    unsigned long dhtTriggerDelay = 2000; // every 2secs
+    DHT *dht;                             // Use a pointer to the DHT object
+    MyDHT()
+    {
+        dht = new DHT(DHT_PIN, DHT_TYPE);
+    } // Dynamically allocate memory
     MyDHT(int DHT_PIN, int DHT_TYPE)
     {
         this->DHT_PIN = DHT_PIN;

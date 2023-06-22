@@ -58,8 +58,8 @@ void setup()
 {
   Serial.begin(9600);
   yellow.my_Led_Init();
-  // sensor config
   sensor.my_Sensor_Init();
+  mydht.dht->begin();
   attachInterrupt(digitalPinToInterrupt(sensor.echo_pin), echoPinInterrupt, CHANGE);
 }
 
