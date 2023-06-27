@@ -49,6 +49,7 @@ module.exports.getSerialData = (io) => {
                     if (set_Top_ReadingFlag_Distance === true && distance_heap.size() >= 10) {
                         console.log({ id: "DangerAlert", color: "#4cceac", data: distance_heap.toArray() });
                         console.log({ emailSent: count_Email_Sent });
+                        // main logic to handle sending distance every five second
                         set_Top_ReadingFlag_Distance = false;
                         io.emit('top_reading_distance_event', { data: { id: "DangerAlert", color: "#4cceac", data: distance_heap.toArray() } })
                         setTimeout(() => {
