@@ -18,6 +18,7 @@
     "heap": "^0.2.7",
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
     "mongodb": "^5.4.0",
     "mongoose": "^7.1.0",
     "morgan": "^1.10.0",

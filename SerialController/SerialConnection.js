@@ -3,10 +3,12 @@ const { ReadlineParser } = require('@serialport/parser-readline');
 const { emailSendFunc } = require('../AutoMatedEmail/AutoMatedEmailSender');
 const { send_Notification } = require('../AutoMatedEmail/SendNotification');
 const { distance_heap } = require('../utility/DataHandler');
+const { recentmeasurmentobj } = require('../utility/RecentMeasurements');
+const { saveNotificationToDatabase, notificationGenerator } = require('../utility/SaveNotificationToDatabase');
 
 
 // const limiterTIme = 3600 * 1000 * 3; //every 3 hr
-const limiterTIme = 1000 * 60 * 2; //every 3 hr
+const limiterTIme = 1000 * 60 * 1; //every 2 minutes
 
 let set_Top_ReadingFlag_Distance = true;
 
@@ -36,12 +38,26 @@ module.exports.getSerialData = (io) => {
                 sensordata = JSON.parse(data)
                 // retrive the data
                 const { distance, temperature, humidity } = sensordata;
+
+                // recent Measurements
+                recentmeasurmentobj.recent_Feed_Insertion_Handler(distance, temperature, humidity)
+
+                if (recentmeasurmentobj.recent_Reading_Flag === true &&
+                    recentmeasurmentobj.get_Net_QueueSize() >= 6) {
+
+                    io.emit('recent_measurement_event', recentmeasurmentobj.get_Array_Of_RecentMeasureMents())
+
+                    recentmeasurmentobj.recent_Reading_Flag = false
+                    setTimeout(() => {
+                        recentmeasurmentobj.recent_Reading_Flag = true
+                    }, 25000);
+                }
+
+
                 // console.log(`[+]data`, sensordata);
                 const currentTime = Date.now();
                 // distance handler
                 if (distance !== undefined && distance < 300) {
-
-
                     distance_heap.push({ x: new Date().toISOString(), y: distance })
                     if (distance_heap.size() > 10)
                         distance_heap.pop()
@@ -63,17 +79,17 @@ module.exports.getSerialData = (io) => {
                         if (!isEmailSent) {
                             console.log('TO DO EMAIL SEND');
                             count_Email_Sent += 1
-                            //     send_Notification()
+
+                            //send_Notification()
                             // send email sent_count as well
+                            saveNotificationToDatabase(notificationGenerator('Intrusion', 'Intrusion Detection'))
                             io.emit('email_event', { data: count_Email_Sent })
                         }
-                        // toggle the value of email send every 2 secs
-                        if (isEmailSent === true)
-                            isEmailSent = false
+
                         // Update the email sent time and set the flag
                         lastEmailSentTime = currentTime;
                         isEmailSent = true;
-                        // update the email send to false after two seconds
+                        // update the email send to false after two minutes
                         setTimeout(() => {
                             isEmailSent = false;
                         }, limiterTIme);
@@ -123,5 +139,8 @@ module.exports.getSerialData = (io) => {
         }
     }
 }
+
+
+
 module.exports.parser = parser
 module.exports.serialPort = serialPort

@@ -4,12 +4,11 @@ class MyDateHandler {
     }
     YYYY_MM_DD() {
         const currentDate = new Date(Date.now());
-        const formattedDate = currentDate.toLocaleDateString('en-GB', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-        });
-        return formattedDate
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate;
     }
     Extract_HH_MM_SS(dateString) {
         const timeString = dateString.substring(11, 19);
@@ -25,7 +24,6 @@ class MyDateHandler {
         return formattedTime;
     }
     Extract_YYYY_MM_DD(dateTimeString) {
-        const dateTimeString = "2023-06-27T12:51:38.159Z";
         const dateString = dateTimeString.substring(0, 10);
         return dateString;
     }
