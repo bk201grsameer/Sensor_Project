@@ -34,4 +34,4 @@ async function hashPasswords() {
         console.error('Error hashing passwords:', error);
     }
 }
-module.exports.hashPasswords = hashPasswords
+module.exports.hashPasswords = hashPasswords;

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const notificationSchema = new Schema({
+const dataStoreSchema = new Schema({
     date: {
         type: String,
         set: function (date) {
@@ -23,11 +23,7 @@ const notificationSchema = new Schema({
         }
     },
 
-    notifications: [{ type: Schema.Types.Mixed }],
-    emailCount: {
-        type: Number,
-        default: 0
-    }
+    data: [{ type: Schema.Types.Mixed }],
 });
-const Notification = mongoose.model('Notification', notificationSchema);
-module.exports.Notification = Notification;
+const DataStore = mongoose.model('DataStore', dataStoreSchema);
+module.exports.DataStore = DataStore;

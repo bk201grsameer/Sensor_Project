@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 module.exports.ConnectToDb = async () => {
     mongoose.connect('mongodb+srv://admin:adminconeprojectapp123@cluster0.s8xdn9i.mongodb.net/sensorprojectdb?retryWrites=true&w=majority', {
@@ -6,10 +6,10 @@ module.exports.ConnectToDb = async () => {
         useUnifiedTopology: true,
     })
         .then(() => {
-            console.log('MongoDB Connection Succeeded.')
+            console.log('MongoDB Connection Succeeded.');
         })
         .catch((err) => {
-            console.log('Error in DB connection: ' + err)
+            console.log('Error in DB connection: ' + err);
         });
 }
 
