@@ -22,8 +22,7 @@ const dataStoreSchema = new Schema({
             return `${year}-${month}-${day}`;
         }
     },
-
-    data: [{ type: Schema.Types.Mixed }],
-});
+    dataStores: [{ type: Schema.Types.Mixed }],
+}, { timestamps: true });
 const DataStore = mongoose.model('DataStore', dataStoreSchema);
-module.exports.DataStore = DataStore;
+module.exports = { DataStore: DataStore };

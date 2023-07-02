@@ -9,11 +9,12 @@ async function saveNotificationToDatabase(notificationMessage, io) {
         const existingNotification = await Notification.findOne({
             date: currentDate
         });
-
+ 
         if (existingNotification) {
             existingNotification.notifications.push(notificationMessage);
             existingNotification.emailCount += 1; // Increase the email sent count
             await existingNotification.save();
+            io.emit('notification_event', { data: notificationMessage });
         } else {
             const newNotification = new Notification({
                 date: currentDate,
@@ -21,6 +22,7 @@ async function saveNotificationToDatabase(notificationMessage, io) {
                 emailCount: 1 // Initialize the email sent count to 1
             });
             await newNotification.save();
+            io.emit('notification_event', { data: notificationMessage });
         }
         console.log('[+] Notification saved');
     } catch (error) {
@@ -34,7 +36,7 @@ function notificationGenerator(typ, msg) {
         'message': msg,
         'date': dateobj.YYYY_MM_DD(),
         'time': dateobj.HH_MM_SS()
-    }
+    };
 }
 
 module.exports = {

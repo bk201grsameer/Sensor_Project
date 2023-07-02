@@ -18,18 +18,21 @@ const app = express();
 
 
 // function to schedule a task which will delete all the prior notifications to current date
-cron.schedule('0 0 * * *', async () => {
-    const targetDate = new Date();
-    targetDate.setHours(0, 0, 0, 0);
-    console.log('[+] Deletion of notification Scheduled ');
-    try {
-        const deletedCount = await deleteNotifications(targetDate);
-        console.log(`Deleted ${deletedCount} notifications.`);
-    } catch (error) {
-        console.error('Error deleting notifications:', error);
-    }
-});
-
+// Schedule the deletion task to run once a day at 12:00 AM
+// dont delete it to do future use
+// cron.schedule('0 0 * * *', async () => {
+//     const targetDate = new Date().toISOString().split('T')[0]; // Get the current date in "YYYY-MM-DD" format
+//     console.log('[+] Deletion of notification Scheduled at 12:00 AM');
+//     try {
+//         const deletedCount = await deleteNotifications(targetDate);
+//         console.log(`Deleted ${deletedCount} notifications.`);
+//     } catch (error) {
+//         console.error('Error deleting notifications:', error);
+//     }
+// }, {
+//     scheduled: true, // Start the task immediately
+//     timezone: 'UTC', // Set the timezone if needed
+// });
 
 // socket io config
 const httpServer = createServer(app);
@@ -45,7 +48,7 @@ getSerialData(io);
 dotenv.config();
 app.use(helmet());
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 ConnectToDb();
 // using cors to all allow users
 app.use(cors());
@@ -54,6 +57,8 @@ app.use(morgan('dev'));
 // this will allow to handle json 
 app.use(express.json());
 app.use('/api/user', require('./routes/UserRoute'));
+// get all the notifications
+app.use('/api/notifications', require('./routes/NotificationRoutes'));
 
 app.get('/', (req, res) => {
     return res.json(utilobj.functionReturn(true, "OK"));

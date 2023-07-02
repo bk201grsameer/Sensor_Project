@@ -3,7 +3,7 @@ const { Notification } = require('../models/Notification');
 
 function deleteNotifications(targetDate) {
     return new Promise((resolve, reject) => {
-        const worker = new Worker('./notificationDeletionWorker.js', {
+        const worker = new Worker('./Worker_s/notificationDeletionWorker.js', {
             workerData: { targetDate },
         });
 
