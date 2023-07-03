@@ -59,6 +59,8 @@ app.use(express.json());
 app.use('/api/user', require('./routes/UserRoute'));
 // get all the notifications
 app.use('/api/notifications', require('./routes/NotificationRoutes'));
+// poll data
+app.use('/api/poll', require('./routes/PollRoutes'));
 
 app.get('/', (req, res) => {
     return res.json(utilobj.functionReturn(true, "OK"));

@@ -51,12 +51,43 @@ module.exports.SignupController = async (req, res) => {
     }
 };
 
+module.exports.CreateUser = async (req, res) => {
+    try {
+        const { firstname, lastname, username, password, userclass } = req.body;
+        if (!username || !password || !firstname || !lastname)
+            throw new Error("ALL FIELDS REQUIRED");
+
+        if (!req.user)
+            throw new Error("NO USER LOGGED IN");
+
+        if (!req.user.isAdmin)
+            throw new Error("NO AUTHORIZATION TO CREATE IT");
+
+        const totalUsers = await User.find({});
+        if (await User.findOne({ username: username }))
+            throw new Error("USER WITH THE EMAIL/Username ALREADY EXISTS");
+
+        const userData = new User({
+            firstname: firstname,
+            lastname: lastname,
+            username: username,
+            // to do hash the password 
+            password: await bcrypt.hash(password, saltRounds),
+            userclass: (userclass || userclass != undefined) ? userclass : "student"
+        });
+        const newuser = await userData.save();
+        return res.json(utilobj.functionReturn(true, newuser));
+    } catch (error) {
+        return res.json(utilobj.functionReturn(false, error.message));
+    }
+};
+
+
 // get all users
 module.exports.get_All_User_Controller = async (req, res) => {
     try {
         if (!req.user)
             throw new Error("AUTHENTICATION REQUIRED");
-
         const totalUsers = await User.find({ username: { $ne: req.user.username } }, '-password -__v').sort({ updatedAt: -1 });
         // data to be returned
         const data = {
@@ -92,6 +123,28 @@ module.exports.update_User = async (req, res) => {
             },
             { new: true });
         return res.json(utilobj.functionReturn(true, updatedUser));
+    } catch (error) {
+        return res.json(utilobj.functionReturn(false, error.message));
+    }
+};
+
+// update user access level
+module.exports.updateAccessLevel = async (req, res) => {
+    try {
+        const userID = req.params.id;
+        if (!userID)
+            throw new Error("USER ID REQUIRED");
+        const user = await User.findOne({ _id: userID }, '-__v -password');
+        if (!user)
+            throw new Error("USER NOT FOUND");
+        if (user.userclass === "admin")
+            throw new Error("Admin Cannot Update the Access Level of other admin");
+        const { userclass } = req.body;
+        if (!userclass)
+            throw new Error("Access level not provided");
+        user.userclass = userclass;
+        const update_User = await user.save();
+        return res.json(utilobj.functionReturn(true, update_User));
     } catch (error) {
         return res.json(utilobj.functionReturn(false, error.message));
     }
