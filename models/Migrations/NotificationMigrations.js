@@ -19,4 +19,10 @@ async function updateTimeStamps() {
         console.error('[-] notifications updating documents:', error);
     }
 }
-updateTimeStamps();
+async function addData(){
+    try {
+        
+    } catch (error) {
+        
+    }
+}

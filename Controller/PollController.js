@@ -2,7 +2,6 @@ const { PollTable } = require("../models/PollTable");
 const { utilobj } = require("../utility/Utils");
 class PollController {
     constructor() {
-
     }
     get_Polls = async (req, res) => {
         try {
