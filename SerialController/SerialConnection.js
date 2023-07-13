@@ -49,7 +49,13 @@ module.exports.getSerialData = (io) => {
             try {
                 sensordata = JSON.parse(data);
                 // retrive the data
-                const { distance, temperature, humidity } = sensordata;
+                let { distance, temperature, humidity } = sensordata;
+                /* THE LOGIC IS TO FLOOR THE VALUES AND AVOID UNNCESSASRY RERENDERS */
+                distance = Math.floor(distance);
+                // temperature = Math.floor(temperature);
+                // humidity = Math.floor(humidity);
+
+
                 // bar data handler
                 barobj.update_BarData(distance, humidity, temperature);
                 if (barobj.bar_Reading_Flag === true) {
@@ -118,7 +124,12 @@ module.exports.getSerialData = (io) => {
                         }, limiterTIme);
                     }
                     if (io !== undefined)
-                        await io.emit('distance_event', { distance: distance });
+                        await io.emit('distance_event_chart', { distance: Math.floor(distance) });
+                    if (io !== undefined && distance >= 100)
+                        await io.emit('distance_event', { distance: Math.floor(150.0) });
+                    else {
+                        await io.emit('distance_event', { distance: Math.floor(distance) });
+                    }
                 }
 
                 //temperature handler
