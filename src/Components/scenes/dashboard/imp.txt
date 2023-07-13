@@ -1,0 +1,15 @@
+Certainly! Let's go through the refactored code and explain what's happening.
+
+The fetchTodayEmailCount function is defined to handle the API request for fetching the email count. It accepts the userToken as a parameter and returns a promise that resolves with the email count retrieved from the API. If there is an error during the request, it logs the error and returns 0.
+
+In the Dashboard component, within the useEffect hook, a new asynchronous function called fetchData is defined. This function is responsible for fetching the email count and setting up the socket event listeners.
+
+Inside fetchData, we use Promise.all to await the completion of two asynchronous operations simultaneously: fetchTodayEmailCount(user.token) and a promise that resolves when the socket connection is established. This allows us to fetch the email count and set up the socket event listeners in parallel.
+
+The email count received from the API request is stored in the emailCount variable, and the state is updated using setEmailCount(emailCount).
+
+The socket event listeners are attached inside the promise that resolves when the socket connection is established. This ensures that the listeners are added only after the connection is ready. The corresponding event handler functions, such as temperature_data, distance_data, etc., are called to update the respective states.
+
+The return statement in the useEffect hook includes a cleanup function that detaches the socket event listeners when the component unmounts. This ensures that the event listeners are properly removed to prevent memory leaks.
+
+By refactoring the code in this way, we improve the performance by using Promise.all to await multiple asynchronous operations in parallel. This reduces the time spent in the event handlers and ensures that the API request and socket setup are performed efficiently.
