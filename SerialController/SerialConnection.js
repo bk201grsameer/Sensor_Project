@@ -29,9 +29,17 @@ let count_Email_Sent = 0;
 const serialPort = new SerialPort({
     path: 'COM3',
     baudRate: 9600,
-});
+},
+    (error) => {
+        if (error) {
+            console.error('Error opening the port:', error.message);
+        } else {
+            console.log(`Connection OK. Serial port ${'COM3'} is open and ready.`);
+        }
+    });
 
 
+// through this pipe we will obtain all the sensor readings 
 const parser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n' }));
 
 
@@ -54,8 +62,6 @@ module.exports.getSerialData = (io) => {
                 distance = Math.floor(distance);
                 // temperature = Math.floor(temperature);
                 // humidity = Math.floor(humidity);
-
-
                 // bar data handler
                 barobj.update_BarData(distance, humidity, temperature);
                 if (barobj.bar_Reading_Flag === true) {
@@ -92,11 +98,22 @@ module.exports.getSerialData = (io) => {
                         distance_heap.pop();
                     // timer for every five seond to send  top 10 distance intrusion readings
                     if (set_Top_ReadingFlag_Distance === true && distance_heap.size() >= 10) {
-                        console.log({ id: "DangerAlert", color: "#4cceac", data: distance_heap.toArray() });
+                        console.log({
+                            id: "DangerAlert",
+                            color: "#4cceac",
+                            data: distance_heap.toArray()
+                        });
                         console.log({ emailSent: count_Email_Sent });
                         // main logic to handle sending distance every five second
                         set_Top_ReadingFlag_Distance = false;
-                        io.emit('top_reading_distance_event', { data: { id: "DangerAlert", color: "#4cceac", data: distance_heap.toArray() } });
+                        io.emit('top_reading_distance_event', {
+                            data:
+                            {
+                                id: "DangerAlert",
+                                color: "#4cceac",
+                                data: distance_heap.toArray()
+                            }
+                        });
                         setTimeout(() => {
                             set_Top_ReadingFlag_Distance = true;
                         }, 5000);
@@ -104,7 +121,8 @@ module.exports.getSerialData = (io) => {
 
 
                     // if distance is less than 15 the
-                    if (distance < 10 && (currentTime - lastEmailSentTime > limiterTIme)) {
+                    if (distance != 0 && distance < 10 && (currentTime - lastEmailSentTime > limiterTIme)) {
+                        console.warn("[+] Warning distance less than 10 cm");
                         if (!isEmailSent) {
                             console.log('TO DO EMAIL SEND');
                             count_Email_Sent += 1;
@@ -125,11 +143,16 @@ module.exports.getSerialData = (io) => {
                     }
                     if (io !== undefined)
                         await io.emit('distance_event_chart', { distance: Math.floor(distance) });
-                    if (io !== undefined && distance >= 100)
-                        await io.emit('distance_event', { distance: Math.floor(150.0) });
-                    else {
+
+                    if (io !== undefined && distance >= 1 && distance <= 200)
                         await io.emit('distance_event', { distance: Math.floor(distance) });
-                    }
+                    // if (io !== undefined && distance != NaN)
+                    //     await io.emit('distance_event', { distance: distance });
+                    // if (io !== undefined && distance >= 1 && distance <= 250)
+                    //     await io.emit('distance_event', { distance: Math.floor(distance) });
+                    // else {
+                    //     await io.emit('distance_event', { distance: Math.floor(distance) });
+                    // }
                 }
 
                 //temperature handler

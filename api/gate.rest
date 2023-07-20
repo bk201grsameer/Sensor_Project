@@ -1,0 +1,10 @@
+#gate status
+###
+GET http://localhost:8000/api/gateroute/getGateStatus HTTP/1.1
+#gate status
+###
+GET http://localhost:8000/api/gateroute/opengate HTTP/1.1
+
+#gate status
+###
+GET http://localhost:8000/api/gateroute/closegate HTTP/1.1

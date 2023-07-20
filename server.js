@@ -17,22 +17,6 @@ const deleteNotifications = require('./Worker_s/notificationWorker');
 const app = express();
 
 
-// function to schedule a task which will delete all the prior notifications to current date
-// Schedule the deletion task to run once a day at 12:00 AM
-// dont delete it to do future use
-// cron.schedule('0 0 * * *', async () => {
-//     const targetDate = new Date().toISOString().split('T')[0]; // Get the current date in "YYYY-MM-DD" format
-//     console.log('[+] Deletion of notification Scheduled at 12:00 AM');
-//     try {
-//         const deletedCount = await deleteNotifications(targetDate);
-//         console.log(`Deleted ${deletedCount} notifications.`);
-//     } catch (error) {
-//         console.error('Error deleting notifications:', error);
-//     }
-// }, {
-//     scheduled: true, // Start the task immediately
-//     timezone: 'UTC', // Set the timezone if needed
-// });
 
 // socket io config
 const httpServer = createServer(app);
@@ -61,6 +45,13 @@ app.use('/api/user', require('./routes/UserRoute'));
 app.use('/api/notifications', require('./routes/NotificationRoutes'));
 // poll data
 app.use('/api/poll', require('./routes/PollRoutes'));
+// chart data
+app.use('/api/chart', require('./routes/ChartRoute'));
+
+// gate route
+app.use("/api/gateroute", require('./routes/GateRoute'));
+
+app.use("/api/downloadroute", require('./routes/DownloadRoute'));
 
 app.get('/', (req, res) => {
     return res.json(utilobj.functionReturn(true, "OK"));
