@@ -28,7 +28,6 @@ import { useNavigate } from 'react-router-dom';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { TransitionGroup } from 'react-transition-group';
-import AllChart from '../line/AllChart';
 const Dashboard = () => {
     // the user config
     const data = useSelector((state) => state.authState.user);
@@ -85,7 +84,7 @@ const Dashboard = () => {
         try {
             try {
                 const { data } = await axios.get('http://localhost:8000/api/gateroute/closegate');
-                if (data.status === false)
+                if (data.status === true)
                     throw new Error(data.message);
                 setIsGateOpen(false);
             } catch (error) {
@@ -183,43 +182,6 @@ const Dashboard = () => {
         return reversedValue;
     }
 
-    // function to handle download reports
-    const handle_DownLoad = async (e) => {
-        fetch('/api/generate_report', {
-            method: 'GET',
-            responseType: 'blob', // Specify the response type as blob to receive binary data.
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch the report.');
-                }
-                return response.blob(); // Convert the response to a blob.
-            })
-            .then(async (blob) => {
-                // console.log({ data: await blob.arrayBuffer() });
-                // Create a temporary URL for the blob data.
-                const url = URL.createObjectURL(blob);
-
-                // Create a link element and set its href attribute to the temporary URL.
-                const link = document.createElement('a');
-                link.href = url;
-
-                // Set the download attribute to specify the file name for the downloaded report.
-                link.setAttribute('download', 'report.txt');
-
-                // Append the link element to the document.
-                document.body.appendChild(link);
-
-                // Simulate a click on the link to trigger the download.
-                link.click();
-
-                // Remove the link element from the document after the download.
-                document.body.removeChild(link);
-            })
-            .catch((error) => {
-                console.error('Error while downloading the report:', error);
-            });
-    };
 
     return (
         <DashApp>
@@ -237,7 +199,6 @@ const Dashboard = () => {
                                 fontWeight: "bold",
                                 padding: "10px 20px",
                             }}
-                            onClick={handle_DownLoad}
                         >
                             <DownloadOutlinedIcon sx={{ mr: "10px" }} />
                             Download Reports
@@ -388,7 +349,7 @@ const Dashboard = () => {
                     {/* ROW 2 */}
                     <Box
                         gridColumn="span 8"
-                        gridRow="span 4"
+                        gridRow="span 2"
                         backgroundColor={colors.primary[400]}
                     >
                         <Box
@@ -398,10 +359,32 @@ const Dashboard = () => {
                             justifyContent="space-between"
                             alignItems="center"
                         >
+                            <Box>
+                                <Typography
+                                    variant="h3"
+                                    fontWeight="600"
+                                    color={colors.grey[100]}
+                                >
+                                    Intrusion Detection
+                                </Typography>
+                                <Typography
+                                    variant="h5"
+                                    fontWeight="bold"
+                                    color={colors.blueAccent[400]}
+                                >
+                                    Top Readings
+                                </Typography>
+                            </Box>
+                            <Box>
+                                <IconButton>
+                                    <DownloadOutlinedIcon
+                                        sx={{ fontSize: "26px", color: colors.blueAccent[400] }}
+                                    />
+                                </IconButton>
+                            </Box>
                         </Box>
-                        <Box height="510px" m="-20px 0 0 0">
-                            {/* <DashBoardLineChart isDashboard={true} /> */}
-                            <AllChart isDashboard={true} />
+                        <Box height="250px" m="-20px 0 0 0">
+                            <DashBoardLineChart isDashboard={true} />
                         </Box>
                     </Box>
                     <Box
@@ -487,7 +470,7 @@ const Dashboard = () => {
                             >Closeness Measurements</Typography>
                         </Box>
                     </Box>
-                    {/* <Box
+                    <Box
                         gridColumn="span 4"
                         gridRow="span 2"
                         backgroundColor={colors.primary[400]}
@@ -502,8 +485,8 @@ const Dashboard = () => {
                         <Box height="250px" mt="-20px">
                             <BarChart isDashboard={true} />
                         </Box>
-                    </Box> */}
-                    {/* <Box
+                    </Box>
+                    <Box
                         gridColumn="span 4"
                         gridRow="span 2"
                         backgroundColor={colors.primary[400]}
@@ -519,7 +502,7 @@ const Dashboard = () => {
                         <Box height="250px" mt="-20px">
                             <PieChart isDashboard={true} />
                         </Box>
-                    </Box> */}
+                    </Box>
                 </Box>
             </Box>
         </DashApp >

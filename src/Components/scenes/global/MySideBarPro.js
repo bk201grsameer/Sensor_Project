@@ -266,7 +266,7 @@ const MySideBarPro = () => {
                         {/* all line data */}
                         {/* /line chart */}
                         <Item
-                            title="Chart"
+                            title="Intrusion Visualization"
                             to="/line"
                             icon={<TimelineOutlinedIcon />}
                             selected={selected}

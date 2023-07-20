@@ -112,7 +112,7 @@ const DashBoardLineChart = ({ isCustomLineColors = false, isDashboard = false })
                 pointBorderColor={{ from: "serieColor" }}
                 pointLabelYOffset={-12}
                 useMesh={true}
-                legends={[
+                legends={!isDashboard ? [
                     {
                         anchor: "bottom-right",
                         direction: "column",
@@ -137,7 +137,9 @@ const DashBoardLineChart = ({ isCustomLineColors = false, isDashboard = false })
                             },
                         ],
                     },
-                ]}
+                ]
+                    : []
+                }
             /> :
             <Box
                 mt={5}

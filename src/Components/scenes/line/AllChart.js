@@ -39,7 +39,9 @@ const AllChart = ({ isCustomLineColors = false, isDashboard = false }) => {
     }, [id]);
     return (
         <>
-            <Box ml='30px'>
+            <Box ml={isDashboard ? "42px" : '30px'}
+                mr={isDashboard ? "100px" : '0px'}
+            >
                 <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Chart</InputLabel>
                     <Select
@@ -121,7 +123,7 @@ const AllChart = ({ isCustomLineColors = false, isDashboard = false }) => {
                             legendOffset: -40,
                             legendPosition: 'middle'
                         }}
-                        pointSize={10}
+                        pointSize={8}
                         pointColor={{ theme: 'background' }}
                         pointBorderWidth={2}
                         pointBorderColor={{ from: 'serieColor' }}
@@ -138,7 +140,7 @@ const AllChart = ({ isCustomLineColors = false, isDashboard = false }) => {
                                 itemsSpacing: 0,
                                 itemDirection: 'left-to-right',
                                 itemWidth: 90,
-                                itemHeight: -30,
+                                itemHeight: 30,
                                 itemOpacity: 1,
                                 symbolSize: 14,
                                 symbolShape: 'diamond',
