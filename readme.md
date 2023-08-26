@@ -52,7 +52,8 @@ Your security is our top priority. The Smart Home App uses encryption to protect
 ![Screenshot 1](dashboard.png)
 Reference Link
 [edroh Github](https://github.com/ed-roh/react-admin-dashboard)
-![Screenshot 1](charts.png)
+![Screenshot 2](charts.png)
+![Screenshot 3](arduino.png)
 
 
 
