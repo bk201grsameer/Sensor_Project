@@ -58,6 +58,6 @@ Reference Link
 
 ## Support
 
-If you have any questions, concerns, or feedback, please contact our support team at. We are dedicated to making your smart home experience as smooth as possible.
+If you have any questions, concerns, or feedback, please contact at sameerkarn369369@gmail.com
 
 ---
