@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 module.exports.ConnectToDb = async () => {
-    mongoose.connect('mongodb+srv://admin:adminconeprojectapp123@cluster0.s8xdn9i.mongodb.net/sensorprojectdb?retryWrites=true&w=majority', {
+    mongoose.connect('enter your uri here', {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         serverSelectionTimeoutMS: 30000, // Increase the server selection timeout
