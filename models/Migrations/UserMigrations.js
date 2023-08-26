@@ -1,5 +1,6 @@
-const { User } = require("./User");
 const bcrypt = require('bcrypt');
+const { User } = require('../User');
+const { ConnectToDb } = require('../ConnectToDb');
 
 // Update all existing records to set 'manager' to false
 User.updateMany({}, { $set: { manager: false } })
@@ -34,4 +35,17 @@ async function hashPasswords() {
         console.error('Error hashing passwords:', error);
     }
 }
-module.exports.hashPasswords = hashPasswords;
+
+// Function to update all existing documents with notificationStatus set to true
+async function updateNotificationStatusForAllUsers() {
+    try {
+        // Use updateMany() to set notificationStatus to true for all users
+        await ConnectToDb();
+        const updateResult = await User.updateMany({}, { notificationStatus: true }, { new: true });
+        console.log('Number of documents updated:', updateResult);
+    } catch (error) {
+        console.error('Error updating notification status:', error);
+    }
+}
+updateNotificationStatusForAllUsers();
+

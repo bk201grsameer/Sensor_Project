@@ -22,11 +22,14 @@ var userSchema = new mongoose.Schema({
         type: String,
         default: "student"
     },
+    notificationStatus: {
+        type: Boolean,
+        default: false
+    },
     avatar: {
         type: String,
         default: 'https://i.pinimg.com/564x/5a/1c/86/5a1c86ec4fad3739dfe6534317ccacd2.jpg'
     },
-
 }, {
     timestamps: true
 });

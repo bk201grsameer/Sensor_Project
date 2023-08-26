@@ -4,7 +4,7 @@ const { emailSendFunc } = require('../AutoMatedEmail/AutoMatedEmailSender');
 const { send_Notification } = require('../AutoMatedEmail/SendNotification');
 const { distance_heap } = require('../utility/DataHandler');
 const { recentmeasurmentobj } = require('../utility/RecentMeasurements');
-const { saveNotificationToDatabase, notificationGenerator } = require('../utility/SaveNotificationToDatabase');
+const { saveNotificationToDatabase, notificationGenerator, updateNotificationStatusForAllUsers_appuser } = require('../utility/SaveNotificationToDatabase');
 const { barobj } = require('../utility/BarDataHandler');
 const { saveDataStoreToDatabase } = require('../utility/SaveToDataStore');
 const cron = require('node-cron');
@@ -60,6 +60,7 @@ module.exports.getSerialData = (io) => {
                 let { distance, temperature, humidity } = sensordata;
                 /* THE LOGIC IS TO FLOOR THE VALUES AND AVOID UNNCESSASRY RERENDERS */
                 distance = Math.floor(distance);
+                // console.log(distance);
                 // temperature = Math.floor(temperature);
                 // humidity = Math.floor(humidity);
                 // bar data handler
@@ -88,11 +89,10 @@ module.exports.getSerialData = (io) => {
                     }, 25000);
                 }
 
-
                 // console.log(`[+]data`, sensordata);
                 const currentTime = Date.now();
                 // intrusion handler
-                if (distance !== undefined && distance < 300) {
+                if (distance !== undefined && distance <= 300) {
                     distance_heap.push({ x: new Date().toISOString(), y: distance });
                     if (distance_heap.size() > 10)
                         distance_heap.pop();
@@ -124,9 +124,10 @@ module.exports.getSerialData = (io) => {
                     if (distance != 0 && distance < 10 && (currentTime - lastEmailSentTime > limiterTIme)) {
                         console.warn("[+] Warning distance less than 10 cm");
                         if (!isEmailSent) {
+                            emailSendFunc('sameer.karn@edu.savonia.fi', "Intrusion Dected", "Extremly close to the systm");
                             console.log('TO DO EMAIL SEND');
                             count_Email_Sent += 1;
-
+                            updateNotificationStatusForAllUsers_appuser();
                             //send_Notification()
                             // send email sent_count as well
                             saveNotificationToDatabase(notificationGenerator('Intrusion', 'Intrusion Detection'), io);
@@ -144,7 +145,7 @@ module.exports.getSerialData = (io) => {
                     if (io !== undefined)
                         await io.emit('distance_event_chart', { distance: Math.floor(distance) });
 
-                    if (io !== undefined && distance >= 1 && distance <= 200)
+                    if (io !== undefined && distance >= 1 && distance <= 400)
                         await io.emit('distance_event', { distance: Math.floor(distance) });
                     // if (io !== undefined && distance != NaN)
                     //     await io.emit('distance_event', { distance: distance });

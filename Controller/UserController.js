@@ -149,3 +149,22 @@ module.exports.updateAccessLevel = async (req, res) => {
         return res.json(utilobj.functionReturn(false, error.message));
     }
 };
+
+// update user notificaiton
+module.exports.updateUserNotification = async (req, res) => {
+    try {
+        if (!(req.user))
+            throw new Error("Not Authenticated");
+        const user = await User.findByIdAndUpdate(req.user._id,
+            {
+                $set: {
+                    notificationStatus: false
+                }
+            }, { new: true });
+
+        usrProfile = utilobj.user_Profile(user);
+        return res.json(utilobj.functionReturn(true, { user: usrProfile, token: utilobj.createToken(usrProfile) }));
+    } catch (error) {
+        return res.json(utilobj.functionReturn(false, error.message));
+    }
+};
