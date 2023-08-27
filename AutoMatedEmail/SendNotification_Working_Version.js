@@ -11,8 +11,8 @@ module.exports.send_Notification = async () => {
         const currentTime = Date.now();
         if (!isEmailSent) {
             isEmailSent = true;
-            console.log('[+]Sending Email...')
-            await emailSendFunc('nischalkarn369369@gmail.com', 'Notification!!', `Intrusion Detected`);
+            console.log('[+]Sending Email...');
+            await emailSendFunc('example@gmail.com', 'Notification!!', `Intrusion Detected`);
             // Update the email sent time and set the flag
             lastEmailSentTime = currentTime;
             console.log('[+] Notification sent and saved successfully...');
@@ -27,4 +27,4 @@ module.exports.send_Notification = async () => {
     } catch (error) {
         console.error('[-] Failed to send notification:', error);
     }
-}
+};

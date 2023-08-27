@@ -11,7 +11,7 @@ module.exports.send_Notification = async () => {
         const currentTime = Date.now();
         if (!isEmailSent || currentTime - lastEmailSentTime > 12000) {
             console.log('[+]Sending Email...')
-            await emailSendFunc('nischalkarn369369@gmail.com', 'Notification!!', `Intrusion Detected`);
+            await emailSendFunc('example@gmail.com', 'Notification!!', `Intrusion Detected`);
 
             console.log('[+] Notification sent and saved successfully...');
             // Delay sending email flag reset for 5 minutes
