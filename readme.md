@@ -51,10 +51,10 @@ Your security is our top priority. The Smart Home App uses encryption to protect
 ## Screenshots
 
 1. *Fig1: Dashboard*
-![Screenshot 1](dashboard.png)
+    ![Screenshot 1](dashboard.png)
 
 2. *Fig3: Charts*
-![Screenshot 2](charts.png)
+    ![Screenshot 2](charts.png)
 
 3. *Reference Links*
    1. [google](www.google.com)
